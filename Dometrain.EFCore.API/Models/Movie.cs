@@ -7,3 +7,5 @@ public class Movie
     public DateTime ReleaseDate { get; set; }
     public string? Synopsis { get; set; }
 }
+
+public record MovieTitle(int Id, string Title); 

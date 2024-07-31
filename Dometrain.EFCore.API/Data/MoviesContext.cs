@@ -13,8 +13,15 @@ public class MoviesContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(
-            "Server=localhost;Database=Movies;User Id=sa;Password=BenjiPwd123$;TrustServerCertificate=True;");
+        optionsBuilder.UseSqlServer("""
+                                    Server=localhost;
+                                    Database=Movies;
+                                    User Id=sa;
+                                    Password=BenjiPwd123$;
+                                    TrustServerCertificate=True;
+                                    """);
+        // ghetto logging
+        optionsBuilder.LogTo(Console.WriteLine);
         base.OnConfiguring(optionsBuilder);
     }
 }

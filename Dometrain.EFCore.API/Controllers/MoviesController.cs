@@ -90,4 +90,47 @@ public class MoviesController : Controller
 
         return Ok();
     }
+    
+    [HttpGet("by-year/{year:int}")]
+    [ProducesResponseType(typeof(List<Movie>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllByYear([FromRoute] int year)
+    {
+        // take notice of type
+        IQueryable<Movie> allMovies = _context.Movies;
+
+        // `where` is not executed here, but when `ToListAsync` is called
+        IQueryable<Movie> filteredMovies = allMovies.Where(m => m.ReleaseDate.Year == year);
+       
+        // deferred execution. DB is executed here
+        return Ok(await filteredMovies.ToListAsync());
+    }
+   
+    [HttpGet("by-year-query-syntax/{year:int}")]
+    [ProducesResponseType(typeof(List<Movie>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllByYearQuerySyntax([FromRoute] int year)
+    {
+        IQueryable<Movie> filteredMovies =
+            from movie in _context.Movies
+            where movie.ReleaseDate.Year == year
+            select movie;
+       
+        // deferred execution. DB is executed here
+        return Ok(await filteredMovies.ToListAsync());
+    }
+   
+    [HttpGet("by-year-projections/{year:int}")]
+    [ProducesResponseType(typeof(List<Movie>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllByYearUsingProjections([FromRoute] int year)
+    {
+       
+        var filteredMovies = await _context.Movies
+            // query on DbSet
+            .Where(m => m.ReleaseDate.Year == year)
+            // project to new type for performance. We don't want "select *"
+            .Select(movie => new MovieTitle(movie.Id, movie.Title ?? "No Title"))
+            // execute query
+            .ToListAsync();
+       
+        return Ok(filteredMovies);
+    }
 }
