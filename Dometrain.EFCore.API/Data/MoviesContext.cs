@@ -28,11 +28,9 @@ public class MoviesContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //modelBuilder.ApplyConfigurationsFromAssembly(typeof(MoviesContext).Assembly);
-
+        // order matters!
+        modelBuilder.ApplyConfiguration(new GenreMapping());
         modelBuilder.ApplyConfiguration(new MovieMapping());
-        
-        
         base.OnModelCreating(modelBuilder);
     }
 }

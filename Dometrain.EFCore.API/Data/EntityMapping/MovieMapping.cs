@@ -24,9 +24,23 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
             .HasColumnName("Plot")
             .HasColumnType("varchar(max)");
 
-        builder.HasOne(movie => movie.Genre)
+        // Fluent API for the relationship
+        // for when we do not use the default naming convention
+        builder
+            .HasOne(movie => movie.Genre)
             .WithMany(genre => genre.Movies) // define both directional navigational properties
             .HasPrincipalKey(genre => genre.Id) // point to the Pk of the Genre
             .HasForeignKey(movie => movie.MainGenreId); // point to the Fk in the Movie table
+        
+        // seed some data
+        builder.HasData(new Movie
+        {
+            Id = 1,
+            Title = "The Matrix",
+            ReleaseDate = new DateTime(1999, 3, 31),
+            Synopsis =
+                "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
+            MainGenreId = 1 // need to seed this as well
+        });
     }
 }
