@@ -1,4 +1,5 @@
-﻿using Dometrain.EFCore.API.Models;
+﻿using Dometrain.EFCore.API.Data.ValueConverters;
+using Dometrain.EFCore.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -18,11 +19,17 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
             .IsRequired();
         
         builder.Property(movie => movie.ReleaseDate)
-            .HasColumnType("date");
+            .HasColumnType("date")
+            .HasConversion(new DateTimeToChar8Converter()); // only store 8 chars
         
         builder.Property(movie => movie.Synopsis)
             .HasColumnName("Plot")
             .HasColumnType("varchar(max)");
+
+        // builder.Property(mov => mov.AgeRating)
+        //     .HasColumnType("varchar(32)");
+            // instead of saving the int enum value.. but DANGER this will impact queries
+            //.HasConversion<string>(); 
 
         // Fluent API for the relationship
         // for when we do not use the default naming convention
@@ -40,7 +47,8 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
             ReleaseDate = new DateTime(1999, 3, 31),
             Synopsis =
                 "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
-            MainGenreId = 1 // need to seed this as well
+            MainGenreId = 1, // need to seed this as well
+            // AgeRating = AgeRating.Teen,
         });
     }
 }
