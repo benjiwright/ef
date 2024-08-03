@@ -7,8 +7,10 @@ public record Genre
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     
-    [JsonIgnore] public DateTime CreateDate { get; set; }
-    
+    // EF will create a shadow property, so we will comment out
+    // it is possible to use the CreatedDate property because it's a column on the table. E.g.:
+    // DateTime createdAt = _context.Entry(genre).Property("CreatedDate").CurrentValue;
+    // [JsonIgnore] public DateTime CreateDate { get; set; }
     
     // EF will make a collection navigation property
     [JsonIgnore]
