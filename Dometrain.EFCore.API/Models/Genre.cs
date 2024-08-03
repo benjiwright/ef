@@ -11,5 +11,6 @@ public record Genre
     
     
     // EF will make a collection navigation property
+    [JsonIgnore]
     public ICollection<Movie> Movies { get; set; } = new HashSet<Movie>();
 }

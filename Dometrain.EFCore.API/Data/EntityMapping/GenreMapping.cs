@@ -9,8 +9,11 @@ public class GenreMapping : IEntityTypeConfiguration<Genre>
 {
     public void Configure(EntityTypeBuilder<Genre> builder)
     {
+        
         builder.Property(genre => genre.CreateDate)
-            // execute the GETDATE() function in SQL Server when inserting a new record
+            .HasColumnName("CreatedAt")
+            
+            // ok: execute the GETDATE() function in SQL Server when inserting a new record
             // Thus, the Db will set the value
             //.HasDefaultValueSql("GETDATE()")
 

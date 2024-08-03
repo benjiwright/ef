@@ -10,7 +10,7 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
     public void Configure(EntityTypeBuilder<Movie> builder)
     {
         builder
-            .ToTable("Movies")
+            .ToTable("Films") // change the table name
             .HasKey(movie => movie.Id);
 
         builder.Property(movie => movie.Title)
@@ -28,10 +28,10 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
             .HasColumnType("varchar(max)");
 
         builder.Property(mov => mov.AgeRating)
-            .HasColumnType("varchar(32)");
-        // instead of saving the int enum string value
-        // DANGER this will impact queries. Instead of comparing ints, it will compare string values
-        //.HasConversion<string>();
+            .HasColumnType("varchar(32)")
+            // instead of saving the int enum string value
+            // DANGER this will impact queries. Instead of comparing ints, it will compare string values
+            .HasConversion<string>();
 
         // Fluent API for the relationship
         // for when we do not use the default naming convention
@@ -88,11 +88,12 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
                 LastName = "Wachowski",
             });
 
-        // this is broken
-        // builder.OwnsOne(mov => mov.Actors)
-        //     .HasData(
-        //         new { MovieId = 1, FirstName = "Keanu", LastName = "Reeves", },
-        //         new { MovieId = 1, FirstName = "Laurence", LastName = "Fishburne", }
-        //     );
+
+        // seed owned actor(s) data
+        builder.OwnsMany(mov => mov.Actors)
+            .HasData(
+                new { MovieId = 1, Id = 1, FirstName = "Keanu", LastName = "Reeves", },
+                new { MovieId = 1, Id = 2, FirstName = "Laurence", LastName = "Fishburne", }
+            );
     }
 }

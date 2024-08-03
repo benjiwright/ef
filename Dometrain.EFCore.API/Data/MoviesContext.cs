@@ -12,6 +12,8 @@ public class MoviesContext : DbContext
     // Better way to do this with get only property
     public DbSet<Movie> Movies => Set<Movie>();
 
+    public DbSet<Genre> Genres => Set<Genre>();
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer("""
@@ -30,6 +32,5 @@ public class MoviesContext : DbContext
     {
         modelBuilder.ApplyConfiguration(new MovieMapping());
         modelBuilder.ApplyConfiguration(new GenreMapping());
-        base.OnModelCreating(modelBuilder);
     }
 }
