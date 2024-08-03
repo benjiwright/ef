@@ -55,4 +55,75 @@ export PATH="$PATH:$HOME/.dotnet/tools"
 # add first migration
 dotnet-ef migrations add InitialSchema    
 
+# Alter the Movie model to include a new property
+public int ImdbRating { get; set; }
+
+# new migration
+dotnet-ef migrations add AddImdbRatingToMovie
+
+# let's say we want to change that property to a float AND rename it
+public decimal InternetRating { get; set; }
+
+dotnet-ef migrations add ChangeImdbRatingToInternetRating
+
+# we will need to manually update the migration script to change the type and rename the column
+# because EF doesn't know how to do that and will DROP old column and ADD new column instead of ALTER
+```
+
+```csharp
+
+public partial class ChangeImdbRatingToInternetRating : Migration
+{
+    protected override void Up(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.AlterColumn<int>(
+            name: "ImdbRating",
+            table: "Films",
+            type: "decimal(18,2)",
+            nullable: false,
+            defaultValue: 0m);
+        
+        migrationBuilder.RenameColumn(
+            name: "ImdbRating",
+            table: "Films",
+            newName: "InternetRating");
+
+        // BAD AUTO GENERATED CODE
+        // migrationBuilder.DropColumn(
+        //     name: "ImdbRating",
+        //     table: "Films");
+        //
+        // migrationBuilder.AddColumn<decimal>(
+        //     name: "InternetRating",
+        //     table: "Films",
+        //     type: "decimal(18,2)",
+        //     nullable: false,
+        //     defaultValue: 0m);
+    }
+
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        // reverse the changes
+        migrationBuilder.AlterColumn<int>(
+            name: "ImdbRating",
+            table: "Films",
+            type: "int",
+            nullable: false,
+            defaultValue: 0m);
+        
+        migrationBuilder.RenameColumn(
+            name: "InternetRating",
+            table: "Films",
+            newName: "ImdbRating");
+    }
+}
+
+```sh
+# apply the migration
+dotnet-ef database update
+```
+
+```sh
+# apply a specific migration aka rollback
+dotnet-ef database update AddImdbRatingToMovie  
 ```

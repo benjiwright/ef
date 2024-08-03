@@ -16,6 +16,9 @@ public class Movie
     // need to make this relationship in MovieMapping
     public int MainGenreId { get; set; }
 
+    // add this property for migration example
+    public decimal InternetRating { get; set; }
+
     public AgeRating AgeRating { get; set; }
 
     public Person Director { get; set; }
