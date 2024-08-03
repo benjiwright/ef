@@ -10,26 +10,28 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
     public void Configure(EntityTypeBuilder<Movie> builder)
     {
         builder
-            .ToTable("MoviesDb")
+            .ToTable("Movies")
             .HasKey(movie => movie.Id);
-        
+
         builder.Property(movie => movie.Title)
             .HasMaxLength(128)
             .HasColumnType("varchar")
             .IsRequired();
-        
+
         builder.Property(movie => movie.ReleaseDate)
-            .HasColumnType("date")
+            // .HasColumnType("date")
+            .HasColumnType("char(8)")
             .HasConversion(new DateTimeToChar8Converter()); // only store 8 chars
-        
+
         builder.Property(movie => movie.Synopsis)
             .HasColumnName("Plot")
             .HasColumnType("varchar(max)");
 
-        // builder.Property(mov => mov.AgeRating)
-        //     .HasColumnType("varchar(32)");
-            // instead of saving the int enum value.. but DANGER this will impact queries
-            //.HasConversion<string>(); 
+        builder.Property(mov => mov.AgeRating)
+            .HasColumnType("varchar(32)");
+        // instead of saving the int enum string value
+        // DANGER this will impact queries. Instead of comparing ints, it will compare string values
+        //.HasConversion<string>();
 
         // Fluent API for the relationship
         // for when we do not use the default naming convention
@@ -38,8 +40,34 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
             .WithMany(genre => genre.Movies) // define both directional navigational properties
             .HasPrincipalKey(genre => genre.Id) // point to the Pk of the Genre
             .HasForeignKey(movie => movie.MainGenreId); // point to the Fk in the Movie table
-        
-        // seed some data
+
+        // this will put a column on the Movie table called 'Director_FirstName' and `Director_LastName`
+        // builder.ComplexProperty(mov => mov.Director);
+
+        // this will put a column on the Movie table called 'DirectorFirstName' and `DirectorLastName`
+        // but we can move this out to a separate table with .ToTable  
+        builder.OwnsOne(mov => mov.Director)
+            .ToTable("Movie_Directors");
+        // new Table: Movie_Directors with 3 columns:
+        // - Id: PK & FK to Movie table
+        // - FirstName
+        // - LastName
+
+        builder.OwnsMany(mov => mov.Actors)
+            .ToTable("Movie_Actors"); // this is a 1:many relationship with composite primary key
+        // new Table: Movie_Actors with 4 columns:
+        // - MovieId: PK & FK to Movie table
+        // - Id: PK part 2 (composite)
+        // - FirstName
+        // - LastName
+
+
+        SeedData(builder);
+    }
+
+    private void SeedData(EntityTypeBuilder<Movie> builder)
+    {
+        // seed some movie data
         builder.HasData(new Movie
         {
             Id = 1,
@@ -48,7 +76,23 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
             Synopsis =
                 "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
             MainGenreId = 1, // need to seed this as well
-            // AgeRating = AgeRating.Teen,
+            AgeRating = AgeRating.Teen,
         });
+
+        // seed owned director data
+        builder.OwnsOne(mov => mov.Director)
+            .HasData(new
+            {
+                MovieId = 1, // anon type, we know the Id aka FK is 1
+                FirstName = "Lana",
+                LastName = "Wachowski",
+            });
+
+        // this is broken
+        // builder.OwnsOne(mov => mov.Actors)
+        //     .HasData(
+        //         new { MovieId = 1, FirstName = "Keanu", LastName = "Reeves", },
+        //         new { MovieId = 1, FirstName = "Laurence", LastName = "Fishburne", }
+        //     );
     }
 }

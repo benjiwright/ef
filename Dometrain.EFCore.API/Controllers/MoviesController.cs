@@ -42,21 +42,21 @@ public class MoviesController : Controller
     }
 
 
-    // [HttpGet("age-limited-movies{ageRating}")]
-    // [ProducesResponseType(typeof(MovieTitle), StatusCodes.Status200OK)]
-    // [ProducesResponseType(StatusCodes.Status404NotFound)]
-    // public async Task<IActionResult> GetAgeRating([FromRoute] AgeRating ageRating)
-    // {
-    //     var movies = await _context.Movies
-    //         // Danger: this will do string wise compare, not the enum if we save AgeRating as a string in DB
-    //         // by using a ValueConverter
-    //         .Where(movie => movie.AgeRating <= ageRating) 
-    //         .Select(movie => new MovieTitle( movie.Id, movie.Title ?? string.Empty ))
-    //         .ToListAsync();
-    //
-    //     return movies.Count == 0 ? NotFound() : Ok(movies);
-    //
-    // }
+    [HttpGet("age-limited-movies/{ageRating}")]
+    [ProducesResponseType(typeof(MovieTitle), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetAgeRating([FromRoute] AgeRating ageRating)
+    {
+        var movies = await _context.Movies
+            // Danger: this will do string wise compare, not the enum if we save AgeRating as a string in DB
+            // by using a ValueConverter
+            .Where(movie => movie.AgeRating <= ageRating) 
+            .Select(movie => new MovieTitle( movie.Id, movie.Title ?? string.Empty ))
+            .ToListAsync();
+    
+        return movies.Count == 0 ? NotFound() : Ok(movies);
+    
+    }
 
     [HttpPost]
     [ProducesResponseType(typeof(Movie), StatusCodes.Status201Created)]

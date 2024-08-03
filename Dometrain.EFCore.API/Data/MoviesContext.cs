@@ -15,8 +15,8 @@ public class MoviesContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer("""
-                                    Server=localhost;
-                                    Database=Movies;
+                                    Server=localhost,1499;
+                                    Database=MoviesDB;
                                     User Id=sa;
                                     Password=BenjiPwd123$;
                                     TrustServerCertificate=True;
@@ -28,9 +28,8 @@ public class MoviesContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // order matters!
-        modelBuilder.ApplyConfiguration(new GenreMapping());
         modelBuilder.ApplyConfiguration(new MovieMapping());
+        modelBuilder.ApplyConfiguration(new GenreMapping());
         base.OnModelCreating(modelBuilder);
     }
 }
