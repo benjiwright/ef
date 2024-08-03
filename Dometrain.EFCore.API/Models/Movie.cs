@@ -22,15 +22,3 @@ public class Movie
 
     public ICollection<Person> Actors { get; set; } = new List<Person>();
 }
-
-public record MovieTitle(int Id, string Title);
-
-public enum AgeRating
-{
-    All = 0,
-    Kids = 6,
-    Tween = 10,
-    Teen = 13,
-    YoungAdult = 17,
-    Adult = 18,
-}

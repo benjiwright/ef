@@ -64,7 +64,7 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
         // - LastName
 
 
-        SeedData(builder);
+        // SeedData(builder);
     }
 
     private void SeedData(EntityTypeBuilder<Movie> builder)

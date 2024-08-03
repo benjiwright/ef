@@ -17,8 +17,7 @@ public class GenreMapping : IEntityTypeConfiguration<Genre>
             .HasColumnName("CreatedAt")
             .HasValueGenerator<CreatedDateGenerator>();
 
-
-        SeedData(builder);
+        // SeedData(builder);
     }
 
     private static void SeedData(EntityTypeBuilder<Genre> builder)

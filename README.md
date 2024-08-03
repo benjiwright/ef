@@ -21,3 +21,38 @@ CREATE DATABASE [MoviesDB];
 GO
 ```
 
+## Migrations
+
+### snapshot tooling (automation)
+
+Take a snapshot of two databases and compare them to generate a migration script.
+E.g.: 
+
+- Production DB (A)
+- Development DB (B)
+
+Find delta between A and B and generate a migration script to apply to A.
+
+### delta based migrations (manual, small, incremental changes)
+
+Every time you make a change to the model, generate a migration script to apply to the DB. 
+They can be bi-directional. This is like git commits for DB
+
+
+```sh
+# cd to the project
+cd Dometrain.EFCore.API/
+
+# add package to project
+dotnet add package Microsoft.EntityFrameworkCore.Tools
+
+# install the tools globally
+dotnet tool install -g dotnet-ef    
+
+# add to PATH so we can use
+export PATH="$PATH:$HOME/.dotnet/tools"
+
+# add first migration
+dotnet-ef migrations add InitialSchema    
+
+```
