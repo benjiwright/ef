@@ -18,15 +18,22 @@ public class GenreMapping : IEntityTypeConfiguration<Genre>
             .HasValueGenerator<CreatedDateGenerator>();
 
 
-        // seed data
-        builder.HasData(new Genre
-        {
-            Id = 1,
-            Name = "Sci-Fi",
-        });
+        SeedData(builder);
     }
 
-    
+    private static void SeedData(EntityTypeBuilder<Genre> builder)
+    {
+        var genres = new List<Genre>
+        {
+            new() { Id = 1, Name = "Sci-Fi" },
+            new() { Id = 2, Name = "Drama" },
+            new() { Id = 3, Name = "Action" },
+        };
+
+        builder.HasData(genres);
+    }
+
+
     // on insert, the Db will generate the value for "CreatedAt"
     private static void CreateTimestampGenerator(EntityTypeBuilder<Genre> builder)
     {

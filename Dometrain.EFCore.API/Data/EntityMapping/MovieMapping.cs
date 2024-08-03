@@ -11,6 +11,8 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
     {
         builder
             .ToTable("Films") // change the table name
+            // can add a GLOBAL query filter. The Db can store movies before 1980, but we don't EVER want to show them
+            .HasQueryFilter(movie => movie.ReleaseDate >= new DateTime(1980, 1, 1))
             .HasKey(movie => movie.Id);
 
         builder.Property(movie => movie.Title)
@@ -67,17 +69,34 @@ public class MovieMapping : IEntityTypeConfiguration<Movie>
 
     private void SeedData(EntityTypeBuilder<Movie> builder)
     {
-        // seed some movie data
-        builder.HasData(new Movie
+        var movies = new List<Movie>
         {
-            Id = 1,
-            Title = "The Matrix",
-            ReleaseDate = new DateTime(1999, 3, 31),
-            Synopsis =
-                "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
-            MainGenreId = 1, // need to seed this as well
-            AgeRating = AgeRating.Teen,
-        });
+            new()
+            {
+                Id = 1,
+                Title = "The Matrix",
+                ReleaseDate = new DateTime(1999, 3, 31),
+                Synopsis =
+                    "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
+                MainGenreId = 1, // need to seed this as well
+                AgeRating = AgeRating.Teen,
+            },
+            // We have a global filter on ReleaseDate, so this will not be shown but will be in the Db
+            new()
+            {
+                Id = 2,
+                Title = "Gone with the Wind",
+                ReleaseDate = new DateTime(1939, 12, 15),
+                Synopsis = "A sheltered and manipulative Southern belle and a roguish profiteer face off in a turbulent romance as the society around them crumbles with the end of slavery and is rebuilt during the Civil War and Reconstruction periods.",
+                MainGenreId = 2, // need to seed this as well
+                AgeRating = AgeRating.All,
+            }
+        };
+        
+        
+        
+        // seed some movie data
+        builder.HasData(movies);
 
         // seed owned director data
         builder.OwnsOne(mov => mov.Director)
