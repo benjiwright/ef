@@ -26,7 +26,7 @@ GO
 ### snapshot tooling (automation)
 
 Take a snapshot of two databases and compare them to generate a migration script.
-E.g.: 
+E.g.:
 
 - Production DB (A)
 - Development DB (B)
@@ -35,9 +35,8 @@ Find delta between A and B and generate a migration script to apply to A.
 
 ### delta based migrations (manual, small, incremental changes)
 
-Every time you make a change to the model, generate a migration script to apply to the DB. 
+Every time you make a change to the model, generate a migration script to apply to the DB.
 They can be bi-directional. This is like git commits for DB
-
 
 ```sh
 # cd to the project
@@ -126,4 +125,19 @@ dotnet-ef database update
 ```sh
 # apply a specific migration aka rollback
 dotnet-ef database update AddImdbRatingToMovie  
+```
+
+#### Execute SQL Migration Script - Two ways
+
+```sh
+# Option 1: Everything
+dotnet-ef migrations script > migration.sql
+
+# Option 2: Specific migration range from x to the end
+dotnet-ef migrations script ImdbRatingToMovie > partial_migration.sql
+```
+
+```sh
+# create efbundle.exe migration file
+dotnet-ef migrations bundle
 ```

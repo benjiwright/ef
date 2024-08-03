@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Dometrain.EFCore.API.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,8 +26,22 @@ var app = builder.Build();
 // FIXME: dirty hack
 var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<MoviesContext>();
-context.Database.EnsureDeleted(); // nuke everything
-context.Database.EnsureCreated(); // generate the Movies table using the model as schema
+// context.Database.EnsureDeleted(); // nuke everything
+// context.Database.EnsureCreated(); // generate the Movies table using the model as schema
+
+
+// Apply any pending migration, BUT this gives this application Db privileges to modify the schema
+// and that violates the principle of least privilege
+// await context.Database.MigrateAsync(); // apply any pending migration
+
+
+// Check if there are any pending migrations
+var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
+if (pendingMigrations.Any())
+{
+    throw new Exception("There are pending migrations. Please apply them before running the application.");
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
