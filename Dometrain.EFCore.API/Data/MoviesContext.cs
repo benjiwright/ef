@@ -6,6 +6,13 @@ namespace Dometrain.EFCore.API.Data;
 
 public class MoviesContext : DbContext
 {
+    public MoviesContext(DbContextOptionsBuilder<MoviesContext> options)
+        : base(options.Options)
+    {
+        
+    }
+
+
     // OK way to do this
     // public DbSet<Movie> Movies { get; set; } = null!;
 
