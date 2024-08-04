@@ -141,3 +141,18 @@ dotnet-ef migrations script ImdbRatingToMovie > partial_migration.sql
 # create efbundle.exe migration file
 dotnet-ef migrations bundle
 ```
+
+```sh
+# create test db for integration tests
+CONTAINER_ID=$(docker run --restart unless-stopped \
+  -e "ACCEPT_EULA=Y" \
+  -e "MSSQL_SA_PASSWORD=MySaPassword123" \
+  -p 1420:1433 \
+  -d mcr.microsoft.com/mssql/server:2022-latest)
+
+
+docker exec -it $CONTAINER_ID /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P MySaPassword123
+
+CREATE DATABASE TestDB;
+GO
+```
