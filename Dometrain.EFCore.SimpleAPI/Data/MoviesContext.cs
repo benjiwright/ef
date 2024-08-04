@@ -6,10 +6,15 @@ namespace Dometrain.EFCore.SimpleAPI.Data;
 
 public class MoviesContext : DbContext
 {
+    public MoviesContext()
+    {
+    }
+
     public MoviesContext(DbContextOptions<MoviesContext> options)
-        :base(options)
-    { }
-    
+        : base(options)
+    {
+    }
+
     public DbSet<Genre> Genres => Set<Genre>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
